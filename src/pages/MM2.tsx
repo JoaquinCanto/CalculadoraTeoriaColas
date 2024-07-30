@@ -284,8 +284,8 @@ export default function MM2() {
 	return (
 		<>
 			<MathJaxContext config={config} >
-				<div className="p-2 w-full flex flex-col items-center gap-2">
-					<p>Introducir valores en hora:</p>
+				<div className="my-5 w-full flex flex-col items-center gap-4">
+					<p>Introducir valores en un mismo tiempo:</p>
 					<div className="flex flex-row items-center gap-5">
 						<Input
 							// className="w-full flex  "
@@ -342,14 +342,14 @@ export default function MM2() {
 
 				<Divider />
 				{showData &&
-					<div>
+					<div className="my-5 px-4">
 						<div className="py-2 flex flex-col">
 							<div className="flex flex-col items-center gap-5">
 								<MathJax dynamic>{"`mu_s : \\ `" + `$${valueMuS}$`}</MathJax>
 								<MathJax dynamic>{"`rho : \\ `" + `$${valueRho === Infinity ? "∄" : valueRho}$`}</MathJax>
 							</div>
 							{showSameSpeed &&
-								<div>
+								<div className="gap-5">
 									<p className="py-2 flex justify-center">Servidores con misma velocidad:</p>
 									<div className="py-2 px-4 flex flex-row gap-5 justify-center">
 										<div className="w-1/2 flex flex-col items-center gap-5">
@@ -363,9 +363,9 @@ export default function MM2() {
 										<div className="w-1/2 flex flex-col items-start gap-5">
 											<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZero !== undefined) ? math.round(probZero * 100, 2) : NaN}$ %`}</MathJax>
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row items-center gap-5">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valuePN}
 													isClearable
 													type="text"
@@ -379,7 +379,7 @@ export default function MM2() {
 													onValueChange={setValuePN}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -389,13 +389,13 @@ export default function MM2() {
 
 												{showPN && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
+													className="w-1/3 flex mb-5">
 													{`$P_${valuePN}: \\ $` + `$${probN !== undefined ? probN * 100 : probN}$ %`}</MathJax>}
 											</div>
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row items-center gap-5">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valueAM}
 													isClearable
 													type="text"
@@ -409,7 +409,7 @@ export default function MM2() {
 													onValueChange={setValueAM}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -419,8 +419,8 @@ export default function MM2() {
 
 												{showAM && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
-													{`$P_(A${valueAM}): \\ $` + `$${atLeastM !== undefined ? atLeastM * 100 : atLeastM}$ %`}</MathJax>}
+													className="w-1/3 flex mb-5">
+													{`$P_(A${valueAM}): \\ $` + `$${atLeastM !== undefined ? math.round(atLeastM * 100, 2) : NaN}$ %`}</MathJax>}
 											</div>
 										</div>
 									</div>
@@ -432,8 +432,8 @@ export default function MM2() {
 								<div className="py-2 flex flex-col items-center gap-5">
 									<p className="">Servidores con distinta velocidad:</p>
 									{/* <MathJax dynamic>{"`r : \\ `" + `$${valueR}$`}</MathJax> */}
-									<div className="w-full py-2 px-4 flex flex-row gap-5 items-center">
-										<div className="w-1/2 flex flex-col justify-around gap-5">
+									<div className="w-full py-2 px-4 flex flex-row gap-5 justify-center">
+										<div className="w-1/2 flex flex-col items-center gap-5">
 											<p>Con Selección:</p>
 											<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystemCS === Infinity ? "∄" : lengthSystemCS}$`}</MathJax>
 											<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue === Infinity ? "∄" : lengthQueue}$`}</MathJax>
@@ -441,9 +441,9 @@ export default function MM2() {
 											<MathJax dynamic>{"`W_q : \\ `" + `$${waitinQueue === Infinity ? "∄" : waitinQueue}$`}</MathJax>
 											<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZeroCS !== undefined) ? math.round(probZeroCS * 100, 2) : NaN}$ %`}</MathJax>
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row justify-start gap-5 px-28">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valuePNCS}
 													isClearable
 													type="text"
@@ -457,7 +457,7 @@ export default function MM2() {
 													onValueChange={setValuePNCS}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5 mx-8"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -467,13 +467,13 @@ export default function MM2() {
 
 												{showPNCS && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
+													className="w-1/3 flex mb-5">
 													{`$P_${valuePNCS}: \\ $` + `$${probNCS !== undefined ? math.round(probNCS * 100, 2) : NaN}$ %`}</MathJax>}
 											</div>
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row justify-start gap-5 px-28">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valueAMCS}
 													isClearable
 													type="text"
@@ -487,7 +487,7 @@ export default function MM2() {
 													onValueChange={setValueAMCS}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5 mx-8"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -497,11 +497,11 @@ export default function MM2() {
 
 												{showAMCS && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
+													className="w-1/3 flex mb-5">
 													{`$P_(A${valueAMCS}): \\ $` + `$${atLeastMCS !== undefined ? math.round(atLeastMCS * 100, 2) : NaN}$ %`}</MathJax>}
 											</div>
 										</div>
-										<div className="w-1/2 flex flex-col justify-around gap-5">
+										<div className="w-1/2 flex flex-col items-center gap-5">
 											<p>Sin Selección:</p>
 											<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystemSS === Infinity ? "∄" : lengthSystemSS}$`}</MathJax>
 											<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue === Infinity ? "∄" : lengthQueue}$`}</MathJax>
@@ -510,9 +510,9 @@ export default function MM2() {
 											<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZeroSS !== undefined) ? math.round(probZeroSS * 100, 2) : NaN}$ %`}</MathJax>
 
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row justify-start gap-5 px-28">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valuePNSS}
 													isClearable
 													type="text"
@@ -526,7 +526,7 @@ export default function MM2() {
 													onValueChange={setValuePNSS}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5 mx-8"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -536,13 +536,13 @@ export default function MM2() {
 
 												{showPNSS && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
+													className="w-1/3 flex mb-5">
 													{`$P_${valuePNSS}: \\ $` + `$${probNSS !== undefined ? math.round(probNSS * 100, 2) : NaN}$ %`}</MathJax>}
 											</div>
 
-											<div className="w-full flex flex-row justify-center items-center gap-5">
+											<div className="w-full flex flex-row justify-start gap-5 px-28">
 												<Input
-													className="w-1/3 flex items-center justify-center content-center"
+													className="w-1/3 flex"
 													value={valueAMSS}
 													isClearable
 													type="text"
@@ -556,7 +556,7 @@ export default function MM2() {
 													onValueChange={setValueAMSS}
 												/>
 												<Button
-													className="max-w-1/3 flex items-center"
+													className="max-w-1/3 flex mb-5 mx-8"
 													color="primary"
 													variant="ghost"
 													startContent={<CiCalculator1 />}
@@ -566,7 +566,7 @@ export default function MM2() {
 
 												{showAMSS && <MathJax
 													dynamic
-													className="w-1/3 flex items-center">
+													className="w-1/3 flex mb-5">
 													{`$P_(A${valueAMSS}): \\ $` + `$${atLeastMSS !== undefined ? math.round(atLeastMSS * 100, 2) : NaN}$ %`}</MathJax>}
 											</div>
 										</div>

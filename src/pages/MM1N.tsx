@@ -33,6 +33,14 @@ export default function MM1N() {
 	const [waitinQueue, setWaitinQueue] = useState<number>();
 	const [probZero, setProbZero] = useState<number>();
 
+	const [probBlock, setProbBlock] = useState<number>();
+	const [tasaRec, setTasaRec] = useState<number>();
+	const [rendInput, setRendInput] = useState<number>();
+	const [rendOutput, setRendOutput] = useState<number>();
+
+	const [lengthBlocked, setLengthBlocked] = useState<number>();
+	const [waitinBlocked, setWaitinBlocked] = useState<number>();
+
 	const [valuePN, setValuePN] = useState("");
 	const [probN, setProbN] = useState<number>();
 
@@ -117,23 +125,58 @@ export default function MM1N() {
 	function calcWq(Lq: number, effectiveLambda: number) {
 		const Wq = math.divide(Lq, effectiveLambda);
 		setWaitinQueue(math.round(Wq, 2));
+		return Wq;
+	}
+
+	function calcPb(rho: number, n: number) {
+		const Pb = math.divide(math.multiply(Number(math.pow(rho, n)), (1 - rho)), (1 - Number(math.pow(rho, n + 1))));
+		setProbBlock(Pb);
+		return Pb;
+	}
+
+	function calcTr(lambda: number, Pb: number) {
+		const Tr = math.multiply(lambda, Pb);
+		setTasaRec(math.round(Tr, 2));
+		return Tr;
+	}
+
+	function calcRi(lambda: number, Pb: number) {
+		const Ri = math.multiply(lambda, (1 - Pb));
+		setRendInput(math.round(Ri, 2));
+	}
+
+	function calcRo(mu: number, Pz: number) {
+		const Ro = math.multiply(mu, (1 - Pz));
+		setRendOutput(math.round(Ro, 2));
+	}
+
+	function calcLb(Lq: number, Pz: number) {
+		const Lb = math.divide(Lq, (1 - Pz));
+		setLengthBlocked(math.round(Lb, 2));
+	}
+
+	function calcWb(Wq: number, Pz: number) {
+		const Wb = math.divide(Wq, (1 - Pz));
+		setWaitinBlocked(math.round(Wb, 2));
 	}
 
 	function calcPz(rho: number, n: number) {
 		const Pz = math.divide((1 - rho), (1 - Number(math.pow(rho, math.add(n, 1)))));
-		setProbZero(math.round(Pz, 4));
+		setProbZero(Pz);
 		return Pz;
 	}
 
-	function CalculateProbabilityN(valuePN: string, valueRho: number | undefined) {
+	function CalculateProbabilityN(valuePN: string, valueRho: number | undefined, fromCalc: boolean) {
 		let Pn = NaN;
 		const n = Number(valuePN);
 		const rho = valueRho || NaN;
 		const Pz = probZero || NaN;
 
 		Pn = math.multiply(Number(math.pow(rho, n)), Pz);
-		setProbN(math.round(Pn, 4));
-		setShowPN(true);
+		if (!fromCalc) {
+			setProbN(Pn);
+			setShowPN(true);
+		}
 		return Pn;
 	}
 
@@ -142,12 +185,11 @@ export default function MM1N() {
 		var atleast = 1;
 
 		for (let i = m; i > 0; i--) {
-			atleast -= CalculateProbabilityN(i.toString(), valueRho);
+			atleast -= CalculateProbabilityN(i.toString(), valueRho, true);
 		}
 		atleast -= probZero || NaN;
-		setAtLeastM(math.round(atleast, 4));
+		setAtLeastM(atleast);
 
-		setShowPN(false);
 		setShowAM(true);
 	}
 	const Calculate = (lambda: string, mu: string, n: string) => {
@@ -163,16 +205,24 @@ export default function MM1N() {
 		const Lq = calcLq(rho, nCola, Ls);
 
 		calcWs(Ls, effectiveLambda);
-		calcWq(Lq, effectiveLambda);
-		calcPz(rho, nCola);
+		const Wq = calcWq(Lq, effectiveLambda);
+		const Pz = calcPz(rho, nCola);
+
+		const Pb = calcPb(rho, nCola);
+		calcTr(nLambda, Pb);
+		calcRi(nLambda, Pb);
+		calcRo(nMu, Pz);
+
+		calcLb(Lq, Pz);
+		calcWb(Wq, Pz);
 
 		setShowData(true);
 	}
 	return (
 		<>
 			<MathJaxContext config={config} >
-				<div className="p-2 w-full flex flex-col items-center gap-2">
-					<p>Introducir valores en hora:</p>
+				<div className="my-5 w-full flex flex-col items-center gap-4">
+					<p>Introducir valores en un mismo tiempo:</p>
 					<div className="flex flex-row items-center gap-5">
 						<Input
 							// className="w-full flex  "
@@ -229,23 +279,33 @@ export default function MM1N() {
 
 				<Divider />
 				{showData &&
-					<div className="py-2 px-4 flex flex-row gap-5 justify-center">
-						<div className="w-1/2 flex flex-col items-center gap-5">
-							<MathJax dynamic>{"`overline lambda : \\ `" + `$${valueEffectiveLambda === Infinity ? "∄" : valueEffectiveLambda}$`}</MathJax>
-							<MathJax dynamic>{"`overline rho : \\ `" + `$${valueEffectiveRho === Infinity ? "∄" : valueEffectiveRho}$`}</MathJax>
-							<MathJax dynamic>{"`rho : \\ `" + `$${valueRho === Infinity ? "∄" : valueRho}$`}</MathJax>
-							<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystem === Infinity ? "∄" : lengthSystem}$`}</MathJax>
-							<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue === Infinity ? "∄" : lengthQueue}$`}</MathJax>
-							<MathJax dynamic>{"`W_s : \\ `" + `$${waitinSystem === Infinity ? "∄" : waitinSystem}$`}</MathJax>
-							<MathJax dynamic>{"`W_q : \\ `" + `$${waitinQueue === Infinity ? "∄" : waitinQueue}$`}</MathJax>
+					<div className="my-5 px-4 flex flex-row gap-5 justify-center">
+						<div className="w-1/2 flex flex-row items-center gap-5">
+							<div className="w-full flex flex-col items-center gap-5">
+								<MathJax dynamic>{"`overline lambda : \\ `" + `$${valueEffectiveLambda === Infinity ? "∄" : valueEffectiveLambda}$`}</MathJax>
+								<MathJax dynamic>{"`overline rho : \\ `" + `$${valueEffectiveRho === Infinity ? "∄" : valueEffectiveRho}$`}</MathJax>
+								<MathJax dynamic>{"`P_b : \\ `" + `$${probBlock === Infinity ? "∄" : math.round((probBlock || 0) * 100, 2)}$ %`}</MathJax>
+								<MathJax dynamic>{"`tau : \\ `" + `$${tasaRec === Infinity ? "∄" : tasaRec}$`}</MathJax>
+								<MathJax dynamic>{"`gamma_i : \\ `" + `$${rendInput === Infinity ? "∄" : rendInput}$`}</MathJax>
+								<MathJax dynamic>{"`gamma_o : \\ `" + `$${rendOutput === Infinity ? "∄" : rendOutput}$`}</MathJax>
+							</div>
+							<div className="w-full flex flex-col items-center gap-5">
+								<MathJax dynamic>{"`rho : \\ `" + `$${valueRho === Infinity ? "∄" : valueRho}$`}</MathJax>
+								<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystem === Infinity ? "∄" : lengthSystem}$`}</MathJax>
+								<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue === Infinity ? "∄" : lengthQueue}$`}</MathJax>
+								<MathJax dynamic>{"`W_s : \\ `" + `$${waitinSystem === Infinity ? "∄" : waitinSystem}$`}</MathJax>
+								<MathJax dynamic>{"`W_q : \\ `" + `$${waitinQueue === Infinity ? "∄" : waitinQueue}$`}</MathJax>
+								<MathJax dynamic>{"`L_b : \\ `" + `$${lengthBlocked === Infinity ? "∄" : lengthBlocked}$`}</MathJax>
+								<MathJax dynamic>{"`W_b : \\ `" + `$${waitinBlocked === Infinity ? "∄" : waitinBlocked}$`}</MathJax>
+							</div>
 						</div>
 
 						<div className="w-1/2 flex flex-col items-start gap-5">
 							<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZero !== undefined) ? math.round(probZero * 100, 2) : NaN}$ %`}</MathJax>
 
-							<div className="w-full flex flex-row justify-center items-center gap-5">
+							<div className="w-full flex flex-row items-center gap-5">
 								<Input
-									className="w-1/3 flex items-center justify-center content-center"
+									className="w-1/3 flex"
 									value={valuePN}
 									isClearable
 									type="text"
@@ -259,23 +319,23 @@ export default function MM1N() {
 									onValueChange={setValuePN}
 								/>
 								<Button
-									className="max-w-1/3 flex items-center"
+									className="max-w-1/3 flex mb-5"
 									color="primary"
 									variant="ghost"
 									startContent={<CiCalculator1 />}
-									onPress={() => CalculateProbabilityN(valuePN, valueRho)}>
+									onPress={() => CalculateProbabilityN(valuePN, valueRho, false)}>
 									Calcular
 								</Button>
 
 								{showPN && <MathJax
 									dynamic
-									className="w-1/3 flex items-center">
+									className="w-1/3 flex mb-5">
 									{`$P_${valuePN}: \\ $` + `$${probN !== undefined ? math.round(probN * 100, 2) : NaN}$ %`}</MathJax>}
 							</div>
 
-							<div className="w-full flex flex-row justify-center items-center gap-5">
+							<div className="w-full flex flex-row items-center gap-5">
 								<Input
-									className="w-1/3 flex items-center justify-center content-center"
+									className="w-1/3 flex"
 									value={valueAM}
 									isClearable
 									type="text"
@@ -289,7 +349,7 @@ export default function MM1N() {
 									onValueChange={setValueAM}
 								/>
 								<Button
-									className="max-w-1/3 flex items-center"
+									className="max-w-1/3 flex mb-5"
 									color="primary"
 									variant="ghost"
 									startContent={<CiCalculator1 />}
@@ -299,7 +359,7 @@ export default function MM1N() {
 
 								{showAM && <MathJax
 									dynamic
-									className="w-1/3 flex items-center">
+									className="w-1/3 flex mb-5">
 									{`$P_(A${valueAM}): \\ $` + `$${atLeastM !== undefined ? math.round(atLeastM * 100, 2) : NaN}$ %`}</MathJax>}
 							</div>
 						</div>

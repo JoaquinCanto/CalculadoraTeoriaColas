@@ -165,8 +165,8 @@ export default function MG1() {
 	return (
 		<>
 			<MathJaxContext config={config} >
-				<div className="p-2 w-full flex flex-col items-center gap-2">
-					<p>Introducir valores en hora:</p>
+				<div className="my-5 w-full flex flex-col items-center gap-4">
+					<p>Introducir valores en un mismo tiempo:</p>
 					<div className="flex flex-row items-center gap-5">
 						<Input
 							// className="w-full flex  "
@@ -223,87 +223,76 @@ export default function MG1() {
 
 				<Divider />
 				{showData &&
-					<div>
-						<div className="py-2 flex flex-col">
-							<div className="flex flex-col items-center gap-5">
+					<div className="my-5 px-4 flex flex-row gap-5 justify-center">
+						<div className="w-1/2 flex flex-col items-center gap-5">
+							<MathJax dynamic>{"`rho : \\ `" + `$${valueRho === Infinity ? "∄" : valueRho}$`}</MathJax>
+							<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystem === Infinity ? "∄" : lengthSystem}$`}</MathJax>
+							<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue === Infinity ? "∄" : lengthQueue}$`}</MathJax>
+							<MathJax dynamic>{"`W_s : \\ `" + `$${waitinSystem === Infinity ? "∄" : waitinSystem}$`}</MathJax>
+							<MathJax dynamic>{"`W_q : \\ `" + `$${waitinQueue === Infinity ? "∄" : waitinQueue}$`}</MathJax>
+						</div>
 
-								<MathJax dynamic>{"`rho : \\ `" + `$${valueRho}$`}</MathJax>
+						<div className="w-1/2 flex flex-col items-start gap-5">
+							<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZero !== undefined) ? math.round(probZero * 100, 2) : NaN}$ %`}</MathJax>
+
+							<div className="w-full flex flex-row items-center gap-5">
+								<Input
+									className="w-1/3 flex"
+									value={valuePN}
+									isClearable
+									type="text"
+									variant="faded"
+									label={<MathJax>{"`n :`"}</MathJax>}
+									labelPlacement="outside-left"
+									description="Probabilidad de n en sistema."
+									isInvalid={isInvalid(valuePN)}
+									color={isInvalid(valuePN) ? "danger" : "primary"}
+									errorMessage="Introduzca un formato válido."
+									onValueChange={setValuePN}
+								/>
+								<Button
+									className="max-w-1/3 flex mb-5"
+									color="primary"
+									variant="ghost"
+									startContent={<CiCalculator1 />}
+									onPress={() => CalculateProbabilityN(valuePN, valueRho, false)}>
+									Calcular
+								</Button>
+
+								{showPN && <MathJax
+									dynamic
+									className="w-1/3 flex mb-5">
+									{`$P_${valuePN}: \\ $` + `$${probN !== undefined ? math.round(probN * 100, 2) : NaN}$ %`}</MathJax>}
 							</div>
 
-							<div>
-								<div className="py-2 px-4 flex flex-row gap-5 justify-center">
-									<div className="w-1/2 flex flex-col items-center gap-5">
+							<div className="w-full flex flex-row items-center gap-5">
+								<Input
+									className="w-1/3 flex"
+									value={valueAM}
+									isClearable
+									type="text"
+									variant="faded"
+									label={<MathJax>{"`m :`"}</MathJax>}
+									labelPlacement="outside-left"
+									description="Probabilidad de almenos m en sistema."
+									isInvalid={isInvalid(valueAM)}
+									color={isInvalid(valueAM) ? "danger" : "primary"}
+									errorMessage="Introduzca un formato válido."
+									onValueChange={setValueAM}
+								/>
+								<Button
+									className="max-w-1/3 flex mb-5"
+									color="primary"
+									variant="ghost"
+									startContent={<CiCalculator1 />}
+									onPress={() => CalculateAtLeastM(valueAM, valueRho)}>
+									Calcular
+								</Button>
 
-										<MathJax dynamic>{"`L_s : \\ `" + `$${lengthSystem}$`}</MathJax>
-										<MathJax dynamic>{"`L_q : \\ `" + `$${lengthQueue}$`}</MathJax>
-										<MathJax dynamic>{"`W_s : \\ `" + `$${waitinSystem}$`}</MathJax>
-										<MathJax dynamic>{"`W_q : \\ `" + `$${waitinQueue}$`}</MathJax>
-									</div>
-
-									<div className="w-1/2 flex flex-col items-start gap-5">
-										<MathJax dynamic>{"`P_0 : \\ `" + `$${(probZero !== undefined) ? math.round(probZero * 100, 2) : NaN}$ %`}</MathJax>
-
-										<div className="w-full flex flex-row justify-center items-center gap-5">
-											<Input
-												className="w-1/3 flex items-center justify-center content-center"
-												value={valuePN}
-												isClearable
-												type="text"
-												variant="faded"
-												label={<MathJax>{"`n :`"}</MathJax>}
-												labelPlacement="outside-left"
-												description="Probabilidad de n en sistema."
-												isInvalid={isInvalid(valuePN)}
-												color={isInvalid(valuePN) ? "danger" : "primary"}
-												errorMessage="Introduzca un formato válido."
-												onValueChange={setValuePN}
-											/>
-											<Button
-												className="max-w-1/3 flex items-center"
-												color="primary"
-												variant="ghost"
-												startContent={<CiCalculator1 />}
-												onPress={() => CalculateProbabilityN(valuePN, valueRho, false)}>
-												Calcular
-											</Button>
-
-											{showPN && <MathJax
-												dynamic
-												className="w-1/3 flex items-center">
-												{`$P_${valuePN}: \\ $` + `$${probN !== undefined ? math.round(probN * 100, 2) : NaN}$ %`}</MathJax>}
-										</div>
-
-										<div className="w-full flex flex-row justify-center items-center gap-5">
-											<Input
-												className="w-1/3 flex items-center justify-center content-center"
-												value={valueAM}
-												isClearable
-												type="text"
-												variant="faded"
-												label={<MathJax>{"`m :`"}</MathJax>}
-												labelPlacement="outside-left"
-												description="Probabilidad de almenos m en sistema."
-												isInvalid={isInvalid(valueAM)}
-												color={isInvalid(valueAM) ? "danger" : "primary"}
-												errorMessage="Introduzca un formato válido."
-												onValueChange={setValueAM}
-											/>
-											<Button
-												className="max-w-1/3 flex items-center"
-												color="primary"
-												variant="ghost"
-												startContent={<CiCalculator1 />}
-												onPress={() => CalculateAtLeastM(valueAM, valueRho)}>
-												Calcular
-											</Button>
-
-											{showAM && <MathJax
-												dynamic
-												className="w-1/3 flex items-center">
-												{`$P_(A${valueAM}): \\ $` + `$${atLeastM !== undefined ? math.round(atLeastM * 100, 2) : NaN}$ %`}</MathJax>}
-										</div>
-									</div>
-								</div>
+								{showAM && <MathJax
+									dynamic
+									className="w-1/3 flex mb-5">
+									{`$P_(A${valueAM}): \\ $` + `$${atLeastM !== undefined ? math.round(atLeastM * 100, 2) : NaN}$ %`}</MathJax>}
 							</div>
 						</div>
 					</div>

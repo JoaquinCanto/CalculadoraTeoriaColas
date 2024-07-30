@@ -61,8 +61,8 @@ export default function MMP() {
 	return (
 		<>
 			<MathJaxContext config={config} >
-				<div className="p-2 w-full flex flex-col items-center gap-2">
-					<p>Introducir valores en hora:</p>
+				<div className="my-5 w-full flex flex-col items-center gap-4">
+					<p>Introducir valores en un mismo tiempo:</p>
 					<div className="flex flex-row items-center gap-5">
 						<Input
 							// className="w-full flex  "
@@ -119,17 +119,9 @@ export default function MMP() {
 
 				<Divider />
 				{showData &&
-					<div>
-						<div className="py-2 flex flex-col">
-							<div>
-								<div className="py-2 px-4 flex flex-row gap-5 justify-center">
-									<div className="w-1/2 flex flex-col items-center gap-5">
-										<MathJax dynamic>{"`W_s1 : \\ `" + `$${waitinQueue}$`}</MathJax>
-										<MathJax dynamic>{"`W_q1 : \\ `" + `$${waitinSystem}$`}</MathJax>
-									</div>
-								</div>
-							</div>
-						</div>
+					<div className="my-5 px-4 w-full flex flex-col items-center gap-5">
+						<MathJax dynamic>{"`W_s1 : \\ `" + `$${waitinQueue}$`}</MathJax>
+						<MathJax dynamic>{"`W_q1 : \\ `" + `$${waitinSystem}$`}</MathJax>
 					</div>
 				}
 			</MathJaxContext>
